@@ -8,8 +8,14 @@ import wandb
 class save_function:
     def save_pretrained(self, path):
         os.makedirs(path, exist_ok=True)
+        obj = None
+        try:
+            obj  = dataclasses.asdict(self)
+        except:
+            obj = {k:v for k,v in self.__dict__.items() if type(v) in [str, int, float, bool, list, dict, type(None)]}
+            
         with open(os.path.join(path, self.filename), 'w', encoding='utf-8') as f:
-            json.dump(dataclasses.asdict(self), f, ensure_ascii=False, indent=2)
+            json.dump(obj, f, ensure_ascii=False, indent=2)
             
 @dataclasses.dataclass
 class Args(save_function):
